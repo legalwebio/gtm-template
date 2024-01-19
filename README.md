@@ -1,2 +1,2 @@
 # gtm-template
-legalweb CMP template for Google Tag Managers Consent Mode
+legal web CMP template for Google Tag Managers Consent Mode
