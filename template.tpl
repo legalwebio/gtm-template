@@ -14,13 +14,13 @@ ___INFO___
   "version": 1,
   "securityGroups": [],
   "displayName": "legal web Consent Mode Template",
-   "categories": [
+  "categories": [
     "TAG_MANAGEMENT",
 	"ANALYTICS",
     "PERSONALIZATION",
 	"REMARKETING",
     "UTILITY"
-  ],
+  ]
   "brand": {
     "id": "brand_dummy",
     "displayName": "",
@@ -106,10 +106,8 @@ const main = (data) => {
   gtagSet('url_passthrough', data.url_passthrough);
   //gtagSet('developer_id.your_developer_id', true); // todo
   // Set default consent state(s)
-  data.defaultSettings.forEach(settings => {
-    const defaultData = getDefaultSettings();
-    setDefaultConsentState(defaultData);
-  });
+  const defaultData = getDefaultSettings();
+  setDefaultConsentState(defaultData);
 
   // Check if cookie is set and has values that correspond to Google consent
   // types. If it does, run onUserConsent().
@@ -128,7 +126,7 @@ const main = (data) => {
    *   object containing fields that correspond to the five built-in Google
    *   consent types.
    */
-  callInWindow('addConsentListenerExample', onUserConsent);
+  callInWindow('lwRegisterConsentModeListener', onUserConsent);
 };
 main(data);
 data.gtmOnSuccess();
@@ -161,7 +159,97 @@ ___WEB_PERMISSIONS___
         "publicId": "access_globals",
         "versionId": "1"
       },
-      "param": []
+      "param": [
+        {
+          "key": "keys",
+          "value": {
+            "type": 2,
+            "listItem": [
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  },
+                  {
+                    "type": 1,
+                    "string": "execute"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "lwGetGoogleConsentModeData"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "key"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  },
+                  {
+                    "type": 1,
+                    "string": "execute"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "lwRegisterConsentModeListener"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "clientAnnotations": {
+      "isEditedByUser": true
     },
     "isRequired": true
   },
@@ -171,7 +259,27 @@ ___WEB_PERMISSIONS___
         "publicId": "write_data_layer",
         "versionId": "1"
       },
-      "param": []
+      "param": [
+        {
+          "key": "keyPatterns",
+          "value": {
+            "type": 2,
+            "listItem": [
+              {
+                "type": 1,
+                "string": "ads_data_redaction.*"
+              },
+              {
+                "type": 1,
+                "string": "url_passthrough.*"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "clientAnnotations": {
+      "isEditedByUser": true
     },
     "isRequired": true
   },
@@ -341,6 +449,68 @@ ___WEB_PERMISSIONS___
                     "boolean": true
                   }
                 ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "consentType"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "ad_user_data"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
+              },
+              {
+                "type": 3,
+                "mapKey": [
+                  {
+                    "type": 1,
+                    "string": "consentType"
+                  },
+                  {
+                    "type": 1,
+                    "string": "read"
+                  },
+                  {
+                    "type": 1,
+                    "string": "write"
+                  }
+                ],
+                "mapValue": [
+                  {
+                    "type": 1,
+                    "string": "ad_personalization"
+                  },
+                  {
+                    "type": 8,
+                    "boolean": false
+                  },
+                  {
+                    "type": 8,
+                    "boolean": true
+                  }
+                ]
               }
             ]
           }
@@ -362,6 +532,6 @@ scenarios: []
 
 ___NOTES___
 
-Created on 1.2.2024, 14:10:16
+Created on 1.2.2024, 14:51:02
 
 
