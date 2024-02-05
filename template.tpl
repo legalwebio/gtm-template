@@ -20,7 +20,7 @@ ___INFO___
     "PERSONALIZATION",
 	"REMARKETING",
     "UTILITY"
-  ]
+  ],
   "brand": {
     "id": "brand_dummy",
     "displayName": "",
