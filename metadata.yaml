@@ -1,5 +1,5 @@
 homepage: "https://www.legalweb.io"
 documentation: "https://github.com/legalwebio/gtm-template"
 versions:
-  - sha: c3608e3888951fdf86852cbb1a3563df064ef7d6
+  - sha: 34b363e50135f12d511ec21755d5da918ad3178f
     changeNotes: Initial release.
