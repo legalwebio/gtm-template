@@ -66,7 +66,6 @@ ___TEMPLATE_PARAMETERS___
 
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
-// The first two lines are optional, use if you want to enable logging
 const log = require('logToConsole');
 log('data =', data);
 const setDefaultConsentState = require('setDefaultConsentState');
