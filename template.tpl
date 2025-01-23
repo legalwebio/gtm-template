@@ -102,7 +102,7 @@ const main = (data) => {
    */
   gtagSet('ads_data_redaction', data.ads_data_redaction);
   gtagSet('url_passthrough', data.url_passthrough);
-  //gtagSet('developer_id.your_developer_id', true); // todo
+  gtagSet('dYmU3OD', true); 
   
   // Set default consent state(s)
   setDefaultConsentState(getDefaultSettings());
