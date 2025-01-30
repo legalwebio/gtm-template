@@ -43,23 +43,45 @@ ___TEMPLATE_PARAMETERS___
     "paramTableColumns": [
       {
         "param": {
-          "type": "CHECKBOX",
-          "name": "ads_data_redaction",
-          "checkboxText": "Redact Ads Dat",
+          "type": "TEXT",
+          "name": "region",
+          "displayName": "Region (leave blank to have consent apply to all regions)",
+          "simpleValueType": true
+        },
+        "isUnique": true
+      },
+      {
+        "param": {
+          "type": "TEXT",
+          "name": "granted",
+          "displayName": "Granted Consent Types (comma separated)",
           "simpleValueType": true
         },
         "isUnique": false
       },
       {
         "param": {
-          "type": "CHECKBOX",
-          "name": "url_passthrough",
-          "checkboxText": "Pass through URL parameters",
+          "type": "TEXT",
+          "name": "denied",
+          "displayName": "Denied Consent Types (comma separated)",
           "simpleValueType": true
         },
         "isUnique": false
       }
-    ]
+    ],
+    "defaultValue": ""
+  },
+  {
+    "type": "CHECKBOX",
+    "name": "ads_data_redaction",
+    "checkboxText": "Redact Ads Data",
+    "simpleValueType": true
+  },
+  {
+    "type": "CHECKBOX",
+    "name": "url_passthrough",
+    "checkboxText": "Pass through URL parameters",
+    "simpleValueType": true
   }
 ]
 
@@ -67,13 +89,18 @@ ___TEMPLATE_PARAMETERS___
 ___SANDBOXED_JS_FOR_WEB_TEMPLATE___
 
 const log = require('logToConsole');
+//log('data =', data);
 const setDefaultConsentState = require('setDefaultConsentState');
 const updateConsentState = require('updateConsentState');
 const callInWindow = require('callInWindow');
 const gtagSet = require('gtagSet');
 
-const getDefaultSettings = () => {
-  return  {
+const getDefaultSettings = (settings) => {
+  const regions = settings != null ? splitInput(settings['region']) : [];
+  const granted = settings != null ? splitInput(settings['granted']): [];
+  const denied = settings != null ? splitInput(settings['denied']): [];
+  
+  const defaultSettings =  {
     ad_storage: 'denied',
     analytics_storage: 'denied',
     ad_user_data: 'denied',
@@ -83,6 +110,27 @@ const getDefaultSettings = () => {
     security_storage: 'denied',
     wait_for_update: 500
   };
+  if (regions.length > 0) {
+    defaultSettings.region = regions;
+  }
+  granted.forEach(entry => {
+    defaultSettings[entry] = 'granted';
+  });
+  denied.forEach(entry => {
+    defaultSettings[entry] = 'denied';
+  });
+  //log(defaultSettings);
+  return defaultSettings;
+};
+
+/*
+ *   Splits the input string using comma as a delimiter, returning an array of
+ *   strings
+ */
+const splitInput = (input) => {
+  return input.split(',')
+      .map(entry => entry.trim())
+      .filter(entry => entry.length !== 0);
 };
 
 /*
@@ -102,11 +150,21 @@ const main = (data) => {
    */
   gtagSet('ads_data_redaction', data.ads_data_redaction);
   gtagSet('url_passthrough', data.url_passthrough);
-  gtagSet('dYmU3OD', true); 
+  gtagSet('developer_id.dYmU3OD', true); 
   
-  // Set default consent state(s)
-  setDefaultConsentState(getDefaultSettings());
-
+  if (data.defaultSettings != null) {
+    // Set default consent state(s)
+    data.defaultSettings.forEach(settings => {
+      const defaultData = getDefaultSettings(settings);
+      // wait_for_update (ms) allows for time to receive visitor choices from the CMP
+      defaultData.wait_for_update = 500;
+      setDefaultConsentState(defaultData);
+    });
+  } else {
+    log('Consent Mode Template: Defaultsettings not set. Please configure default settings');
+    setDefaultConsentState(getDefaultSettings(null));
+  }
+  
   /**
    *   Add event listener to trigger update when consent changes
    *
@@ -131,10 +189,13 @@ ___WEB_PERMISSIONS___
           "key": "environments",
           "value": {
             "type": 1,
-            "string": "debug"
+            "string": "all"
           }
         }
       ]
+    },
+    "clientAnnotations": {
+      "isEditedByUser": true
     },
     "isRequired": true
   },
@@ -257,6 +318,10 @@ ___WEB_PERMISSIONS___
               {
                 "type": 1,
                 "string": "url_passthrough.*"
+              },
+              {
+                "type": 1,
+                "string": "developer_id.*"
               }
             ]
           }
@@ -303,7 +368,7 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
+                    "boolean": true
                   },
                   {
                     "type": 8,
@@ -334,7 +399,7 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
+                    "boolean": true
                   },
                   {
                     "type": 8,
@@ -365,7 +430,7 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
+                    "boolean": true
                   },
                   {
                     "type": 8,
@@ -396,7 +461,7 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
+                    "boolean": true
                   },
                   {
                     "type": 8,
@@ -427,7 +492,7 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
+                    "boolean": true
                   },
                   {
                     "type": 8,
@@ -458,7 +523,7 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
+                    "boolean": true
                   },
                   {
                     "type": 8,
@@ -489,7 +554,7 @@ ___WEB_PERMISSIONS___
                   },
                   {
                     "type": 8,
-                    "boolean": false
+                    "boolean": true
                   },
                   {
                     "type": 8,
@@ -518,5 +583,6 @@ scenarios: []
 ___NOTES___
 
 Created on 1.2.2024, 14:51:02
+
 
 
